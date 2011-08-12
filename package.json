@@ -1,0 +1,16 @@
+{
+  "author": "Dmitri Gaskin",
+  "name": "todo",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "engines": {
+    "node": "~v0.4.10"
+  },
+  "dependencies": {
+    "bones": "https://github.com/developmentseed/bones/tarball/master",
+    "backbone-stash": "= 0.5.0"
+  },
+  "devDependencies": {}
+}

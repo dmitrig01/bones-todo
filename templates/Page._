@@ -1,0 +1,7 @@
+<h1>Items</h1>
+<ul>
+  <% for (i = 0; i < items.length; i++) { %>
+    <li data-id="<%= i %>"><input type="checkbox" class="checkbox" id="checkbox-<%= i %>" <%= items[i].attributes.done ? 'checked' : '' %> /> <label for="checkbox-<%= i %>"><%= items[i].attributes.title %></label></li>
+  <% } %>
+  <li><form method="post" action="/api/Item"><input type="text" id="text" name="text" /><input type="submit" id="submit" value="+ Add" /></form></li>
+</ul>
