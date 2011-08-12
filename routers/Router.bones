@@ -7,7 +7,6 @@ router.prototype.send = function(view) {
 router.prototype.routes = {
     '': 'page',
     '/': 'page',
-    '/post/:post': 'post',
 };
 
 router.prototype.page = function() {
@@ -19,11 +18,4 @@ router.prototype.page = function() {
             }));
         }
     });
-};
-
-router.prototype.post = function() {
-    var post = new models.Post();
-    this.send(new views.Post({
-        'post': post
-    }));
 };
