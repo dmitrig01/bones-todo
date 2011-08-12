@@ -1,4 +1,4 @@
-Bones TODO
+Bones todo
 =============
 
 Bones todo is a small todo-list using the bones framework. Below is a walkthrough of how it was created.
@@ -56,7 +56,7 @@ The next thing to do is define the routes in the router:
 
     router.prototype.routes = {
         '': 'page',
-        '/': 'page',
+        '/': 'page'
     };
 
 This application is very simple: it only has two possible URIs people could hit (on the left of the `:`), and they both map to the same function (on the right of the `:`).
@@ -64,20 +64,59 @@ This application is very simple: it only has two possible URIs people could hit 
 The next part is somewhat complicated: the actual result of the `page` function needs to depend on whether it's run on the client or server. If it's run on the client, the contents of the page need to be injected into the `<body>`. If it's running on the server, the server needs to render a `<html>` wrapper around the page. To accomplish this, the actual function that does this is abstracted out into `router.prototype.send`. Since different applications may want to do this differently, Bones doesn't provide a default, so we'll have to implement it ourselves.
 
     router.prototype.send = function(view) {
-        $('#page').empty().append(view.render());
+        $('#page').empty().append(content);
     };
 
 This function provides the client-side send function. Ignoring the `view.render().el` part (I'll get to that later), the rest just inserts the contents of the rendered view (passed in, as I'll demonstrate in a moment) to `#page`. The next step here is to implement the server side rendering function. This code will live in `Router.server.bones`.
 
-    routers['Router'].prototype.send = function(view) {
+    routers['Router'].prototype.send = function(content) {
         this.res.send(new views.App({
-            content: view.render().el.html(),
+            'content': content,
         }).render());
     }
 
 As you can see, this code doesn't actually create a new router: it overrides the `send` function of the existing router `Router`. This function also calls a view called `App` and renders it. This view contains the main `<html>`. Let's create the view which holds the main App information.
 
-Creating the view
------------------
+Creating the main view
+----------------------
 
+This app, as with most Bones apps, will have one main view which has the `<html>` tags and includes javascript, css, etc, as necessary. The main `App.bones` contains only one line:
+
+    view = Backbone.View.extend();
+
+There is no render function on the client side, as this is always rendered on the server. `App.server.bones` contains the server-side render function, which looks like this:
+
+    views['App'].prototype.render = function() {
+        return templates.App({
+            content: this.options.content
+        });
+    };
+
+`templates.App` is the template "App", which we'll define in a moment. We pass into that an object containing the variables for the template. Again, `<%=` is used to print a variable. `this.options.content` comes from the variable passed into the view at `routers['Router'].prototype.send`. The template will reside in `templates/`, and is called `App._`.
+
+    <html>
+    <head>
+      <meta charset='UTF-8'/>
+      <title>Bones Todo</title>
+      <script src='/assets/bones/all.js' type='text/javascript'></script>
+      <script type='text/javascript'>$(Bones.start);</script>
+      <link rel="stylesheet" href="/assets/todo/style.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    </head>
+    <body>
+      <div id='page'>
+        <%= content %>
+      </div>
+    </body>
+    </html>
+
+Wiring up the router
+--------------------
+
+Previously, we defined `'/': 'page'` as one of the routes. Because of this, Bones expects there to be a function called `page` on the route. While this will eventually show another view, for now we can insert some testing content. In `Router.bones`:
+
+    router.prototype.page = function() {
+        this.send('Testing!');
+    };
+
+Now we have a fully working Bones app! Run it with `./index.js` to try it out.
 
