@@ -4,5 +4,5 @@ model = Backbone.Model.extend({
             return '/api/Item/' + this.get('id');
         }
         return '/api/Item';
-    },
+    }
 });

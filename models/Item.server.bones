@@ -13,7 +13,8 @@ models.Item.prototype.sync = function(method, model, options) {
 
                 // Send back the model, with the id.
                 options.success = function() {
-                    success(model);
+                    // Only send back items that need to be updated.
+                    success({id: model.get('id') });
                 }
 
                 require('backbone-stash')(process.cwd() + '/fixtures').sync(method, model, options);

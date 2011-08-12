@@ -14,11 +14,7 @@ view = Backbone.View.extend({
         var name = $('form input#text').val(), self = this,
             model = (new models.Item({}, { collection: this.collection })).set({'title': name, done: false});
 
-        model.save({}, {
-            success: function(data) {
-                model.set({ 'id': data.id });
-            }
-        });
+        model.save();
         this.collection.add(model);
         this.render();
 
