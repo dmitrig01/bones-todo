@@ -1,7 +1,7 @@
 models.Item.prototype.sync = function(method, model, options) {
-    var success = options.success;
-
     if (method == 'create') {
+        var success = options.success;
+
         // Assign an id to the new item.
         (new models['Items']).fetch({
             success: function(collection) {
